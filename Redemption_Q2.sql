@@ -1,22 +1,29 @@
 WITH redemptioncte AS (
-    SELECT 
+    SELECT
         redemptionDate,
         MAX(redemptionCount) AS mostRecentRedemptionCount
-    FROM 
+    FROM
         `aerobic-name-423202-q3.reporting.tblRetailers` AS r
-    JOIN 
+    JOIN
         `aerobic-name-423202-q3.reporting.tblRedemptions-ByDay` AS rd
-    ON 
+    ON
         r.id = rd.retailerId
-    WHERE 
+    WHERE
         r.retailerName = 'ABC Store'
         AND rd.redemptionDate BETWEEN '2023-10-30' AND '2023-11-05'
-    GROUP BY 
+    GROUP BY
         redemptionDate
 )
 
-SELECT 
+SELECT
     redemptionDate,
     mostRecentRedemptionCount
-FROM 
-    redemptioncte 
+FROM
+    redemptioncte
+WHERE
+    mostRecentRedemptionCount = (
+        SELECT
+            MAX(mostRecentRedemptionCount)
+        FROM
+            redemptioncte
+    );
